@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Cracking_the_Code" options="--enable-preview" />
+      <module name="Cracking_the_Code.main" options="--enable-preview" />
+      <module name="Cracking_the_Code.test" options="--enable-preview" />
+    </option>
+  </component>
+</project>

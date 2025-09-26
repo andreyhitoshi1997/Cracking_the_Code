@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.crackingthecode'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(24)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Testing dependencies - versões mais recentes compatíveis
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+
+    // AssertJ para testes mais expressivos
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+
+    // Utility libraries
+    implementation 'com.google.guava:guava:33.0.0-jre'
+
+    // Logging
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
+    implementation 'org.slf4j:slf4j-api:2.0.12'
+}
+
+application {
+    mainClass = 'Main'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        exceptionFormat "full"
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 24
+
+    // Habilitar preview features se necessário
+    options.compilerArgs += ['--enable-preview']
+
+    // Habilitar informações de debug
+    options.debug = true
+    options.debugOptions.debugLevel = "source,lines,vars"
+}
+
+tasks.withType(Test).configureEach {
+    jvmArgs += ['--enable-preview']
+}
+
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += ['--enable-preview']
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'Main',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.version
+        )
+    }
+}
+
+// Task para executar com preview features habilitadas
+task runWithPreview(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'Main'
+    jvmArgs = ['--enable-preview']
+}
+
+// Configuração para executar com debug
+run {
+    // Habilitar debug JVM
+    jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005']
+    // Mostrar output detalhado
+    standardOutput = System.out
+    errorOutput = System.err
+}
